@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta property="og:type" content="website">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/page/2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:locale" content="en_US">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-异常现象问题及对轨迹修正问题的思考" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/04/13/%E5%BC%82%E5%B8%B8%E7%8E%B0%E8%B1%A1%E9%97%AE%E9%A2%98%E5%8F%8A%E5%AF%B9%E8%BD%A8%E8%BF%B9%E4%BF%AE%E6%AD%A3%E9%97%AE%E9%A2%98%E7%9A%84%E6%80%9D%E8%80%83/" class="article-date">
+  <time class="dt-published" datetime="2021-04-13T09:07:14.473Z" itemprop="datePublished">2021-04-13</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>[toc]</p>
+<h2 id="异常现象的分类"><a href="#异常现象的分类" class="headerlink" title="异常现象的分类"></a>异常现象的分类</h2><blockquote>
+<p>从人的判断看出视频中检测的物体有问题，判断依据是什么，根据判断依据，看看对问题的解决是否有帮助？</p>
+</blockquote>
+<h3 id="问题分类及解决方案version1"><a href="#问题分类及解决方案version1" class="headerlink" title="问题分类及解决方案version1"></a>问题分类及解决方案version1</h3><ul>
+<li><p>车辆晃动，包括水平前后移动，小幅度的来回旋转移动</p>
+<ol>
+<li><del>针对旋转移动可以使用如下条件限制， $\theta3 \geq \theta1 + \alpha(\theta2-\theta1), \alpha \geq 0$, $\theta i 表示第i帧时的航向角$</del></li>
+<li><del>针对前后移动的情况，</del></li>
+</ol>
+<blockquote>
+<p>针对旋转移动和前后移动的异常情况，可以从两种角度出发</p>
+<ol>
+<li><p>当假设数据中当前帧的速度和航向角等特征值准确的情况下，就可以算出下一帧物体的中心点，与下一帧预测的物体的中心点做对比，综合这两个中心点计算出符合常理的中心点。<br>$$<br>C_2 =C_1 + \left(\begin{matrix}<br>\cos \theta &amp; 0 &amp; 0 \<br>0 &amp; \sin \theta &amp; 0 \<br>0 &amp; 0 &amp; 1<br>\end{matrix} \right)<br>\cdot d<br>$$<br>其中 $d = speed \times 两帧间隔的时间$</p>
+<p>从数据中看到，最小速度接近于0，但仍不为0，不符合车辆静止的情况。因此可以推断速度和航向角可能会有偏差。</p>
+<p>当车辆速度非常接近0时，比如 $speed &lt; 0.001(不妨定义为速度的测量精度)$ 时，人工将速度设置为0，固定中心点和航向角。</p>
+</li>
+<li><p><a name="version1_method2"></a> 当假设数据中当前帧的速度和航向角等特征值<strong>不太</strong>准确的情况下，可以从物体状态变换的连续性角度出发，满足一阶连续</p>
+</li>
+</ol>
+<p>$$<br>\hat{C_3} \approx C_2 + (C_2-C_1) \<br>   \hat{\theta_3} \approx \theta_2 + (\theta_2 - \theta_1)<br>$$<br>   将$\hat{C_3}, \hat{\theta_3}与数据中的C_3, \theta_3 综合$，<br>$$<br>\check{C_3}=\alpha \hat{C_3} + (1-\alpha)C_3\<br>   \check{\theta_3}=\alpha \hat{\theta_3} + (1-\alpha)\theta_3 \<br>   \alpha \in [0,1]<br>$$</p>
+</blockquote>
+<p>$$<br>\hat{C_3} \approx C_2 + (C_2-C_1) \<br>\check{C_3}=\alpha C_3 + (1-\alpha)\hat{C_3} \quad \alpha \in [0,1] \<br>C_i 表示第i帧物体的位置向量(x,y)<br>$$</p>
+<p><strong>航向角基本没问题，不用修正了，（按照上述方法对于转弯的车辆也容易出问题）</strong></p>
+</li>
+<li><p>车辆目标框的大小变动</p>
+<ol>
+<li><p>利用体积固定的关系，来限制顶点的不稳定性</p>
+<ul>
+<li>在一个目标首次出现时，它的长宽高就要固定下来，在之后每一帧中，长宽高要保持不变。（目前数据中同一目标的长宽高不固定）</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>车辆目标闪烁情况</p>
+</li>
+</ul>
+<h3 id="解决方案Version2"><a href="#解决方案Version2" class="headerlink" title="解决方案Version2"></a>解决方案Version2</h3><p>异常晃动情况多发生在静止的车辆或正在减速停止的车辆，算法对于静止的车辆中心点的检测存在波动，因此导致车辆的晃动（航向角变化，中心点变化）。</p>
+<h4 id="针对上述异常晃动问题，解决方案如下"><a href="#针对上述异常晃动问题，解决方案如下" class="headerlink" title="针对上述异常晃动问题，解决方案如下"></a>针对上述异常晃动问题，解决方案如下</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 当物体为实际静止的情况时，因为检测精度的限制，检测结果中该物体仍然会存在微小的移动。因此我们需要做固定化处理，即固定中心点、航向角</span><br><span class="line"># 判断物体静止的条件是检测出的物体速度小于 给定的阈值</span><br><span class="line"># 从最新的帧往回退，直到某一帧的box速度大于阈值，停止。</span><br></pre></td></tr></table></figure>
+
+<p>这里要固定的中心点和航向角是否再由历史数据推算，比如，根据前几帧的平均值，或者根据运动曲线的切线方向来确定航向角。</p>
+<h4 id="车辆目标闪烁问题"><a href="#车辆目标闪烁问题" class="headerlink" title="车辆目标闪烁问题"></a>车辆目标闪烁问题</h4><p>假设条件：对于出现次数足够多的box默认为已经可以有效的对它进行跟踪（即使被遮挡也可以根据足够多的历史轨迹进行预测），所以当这种类型的box在某一帧消失后，可以认为该box已驶离检测区域。</p>
+<blockquote>
+<p>对于box</p>
+<ul>
+<li>queue有，frame有</li>
+<li>queue有，frame没有</li>
+<li>queue没有，frame有</li>
+<li>queue没有，frame没有</li>
+</ul>
+</blockquote>
+<p><strong>从该box的历史数据预测出当前帧的box信息</strong></p>
+<p>根据类别，连续出现次数来决定是否对缺失的box进行数据补全。</p>
+<p>==思考==</p>
+<ul>
+<li>根据不同的情况（类别，出现的次数）来对缺失的box连续补上不同个数的数据</li>
+<li>同一个物体，由于跟踪的中断，导致拥有不同的ID（id1, id2），因此对id1预测，会和id2的轨迹重复</li>
+</ul>
+<p>要做的工作如下</p>
+<ul>
+<li>因为存在轨迹重复问题，需要解决 识别两个不同id的box是否是同一物体。</li>
+<li></li>
+</ul>
+<h4 id="车辆异常的轨迹路线"><a href="#车辆异常的轨迹路线" class="headerlink" title="车辆异常的轨迹路线"></a>车辆异常的轨迹路线</h4><p>有的目标会在一定的范围内呈之字形移动，运动轨迹异常。</p>
+<h3 id="小思考"><a href="#小思考" class="headerlink" title="小思考"></a>小思考</h3><p>体积的减小——汽车正在驶离区域</p>
+<h2 id="2021-04-25"><a href="#2021-04-25" class="headerlink" title="2021.04.25"></a>2021.04.25</h2><p>对问题进一步的思考（详见工作的笔记本）</p>
+<ol>
+<li><p>因为检测精度的限制，不确定目标框微小的移动是由检测误差导致的，还是车辆真实移动导致的。</p>
+<p>设定速度阈值等价于设定移动范围的阈值</p>
+<p>带来的影响是对于真实移动的车辆，当移动范围大于 $dis_{threshold}$ 时，才会更新帧中的位置。</p>
+</li>
+</ol>
+<h2 id="论文中可以借鉴的部分"><a href="#论文中可以借鉴的部分" class="headerlink" title="论文中可以借鉴的部分"></a>论文中可以借鉴的部分</h2><h3 id="基于车辆自动识别和交通统计数据的车辆轨迹重建"><a href="#基于车辆自动识别和交通统计数据的车辆轨迹重建" class="headerlink" title="基于车辆自动识别和交通统计数据的车辆轨迹重建"></a><a href="E:\papers\车辆路径修正\译文_atr.1260.docx">基于车辆自动识别和交通统计数据的车辆轨迹重建</a></h3><p>该方法以粒子滤波理论(e.g. kalman滤波)为框架，结合五个时空轨迹修正因子（路径一致性、AVI可测性准则、行程时间一致性、重力流模型和路径-连接流匹配模型）来估计车辆的轨迹。</p>
+<ul>
+<li>路径一致性因子来源于AVI的部分轨迹必须属于可能轨迹集中的一条轨迹的概念。</li>
+<li>行程时间一致性源于这样一个概念，即车辆将选择一条平均行程时间与两个AVI设施之间的真实行程时间相似的路径。</li>
+<li>…….</li>
+</ul>
+<h3 id="基于运动模型来预测车辆轨迹的论文"><a href="#基于运动模型来预测车辆轨迹的论文" class="headerlink" title="基于运动模型来预测车辆轨迹的论文"></a>基于运动模型来预测车辆轨迹的论文</h3><ul>
+<li> [Comparison and evaluation of advanced motion models for vehicle tracking.pdf](..\papers\车辆路径修正\Comparison and evaluation of advanced motion models for vehicle tracking.pdf) </li>
+</ul>
+<p>  考虑了几种运动模型，$constant velocity(CV), constant acceleration(CA), Constant Turn Rate and Velocity(CTRV),$​</p>
+<p>  <img src="https://i.loli.net/2021/08/11/8CPZgs3SIrUTzKn.png" alt="微信截图_20210426190051.png"></p>
+<p>  之后是利用的卡尔曼滤波模型，由于状态转移矩阵多是非线性，用的是UKF。</p>
+<ul>
+<li> [Where Will the Oncoming Vehicle be the Next Second.pdf](..\papers\车辆路径修正\Where Will the Oncoming Vehicle be the Next Second.pdf) </li>
+</ul>
+<p>  也是利用扩展卡尔曼滤波来做的预测</p>
+<ul>
+<li><p><a href="..%5Cpapers%5C%E8%BD%A6%E8%BE%86%E8%B7%AF%E5%BE%84%E4%BF%AE%E6%AD%A3%5CSensorFusionforPredictingVehiclesPathforCollisionAvoidanceSystems.pdf">SensorFusionforPredictingVehiclesPathforCollisionAvoidanceSystems.pdf</a> </p>
+<p>运动模型用的是卡尔曼滤波</p>
+</li>
+</ul>
+<h3 id="基于LSTM来预测车辆轨迹的论文"><a href="#基于LSTM来预测车辆轨迹的论文" class="headerlink" title="基于LSTM来预测车辆轨迹的论文"></a>基于LSTM来预测车辆轨迹的论文</h3><ul>
+<li> [Modeling Vehicle Interactions via Modified LSTMModels for Trajectory Prediction.pdf](..\papers\车辆路径修正\Modeling Vehicle Interactions via Modified LSTMModels for Trajectory Prediction.pdf) </li>
+<li> [Multi-Modal Trajectory Prediction of Surrounding Vehicles with Maneuver based LSTMs.pdf](..\papers\车辆路径修正\Multi-Modal Trajectory Prediction of Surrounding Vehicles with Maneuver based LSTMs.pdf) </li>
+</ul>
+<h3 id="考虑多目标interaction的轨迹预测"><a href="#考虑多目标interaction的轨迹预测" class="headerlink" title="考虑多目标interaction的轨迹预测"></a>考虑多目标interaction的轨迹预测</h3><ul>
+<li>Neural Relational Inference for Interacting Systems, ICML 2018. [<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1802.04687v2">paper</a>] [<a target="_blank" rel="noopener" href="https://github.com/ethanfetaya/NRI">code</a>]</li>
+<li>EvolveGraph: Multi-Agent Trajectory Prediction with Dynamic Relational Reasoning, NeurIPS 2020. [<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2003.13924">paper</a>]</li>
+</ul>
+<h3 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h3><ol>
+<li><a target="_blank" rel="noopener" href="http://html.rhhz.net/GLJTKJ/20160614.htm#rhhz">车辆换道交互行为分析和建模</a></li>
+</ol>
+<ul>
+<li>以换道过程中目标车道上的跟随车为研究对象，考虑换道车周边交通场景，建立了自由换道、强制换道和协作换道过程中跟随车与换道车之间的最小安全距离模型</li>
+</ul>
+<ol start="2">
+<li><p>[Generic Vehicle Tracking Framework Capable of Handling Occlusions](..\papers\车辆路径修正\Generic Vehicle Tracking Framework Capable of Handling Occlusions.pdf)  <del>论文复现难度较大，暂且搁置复现的计划</del></p>
+<p>预测的结果考虑了与周围环境的交互</p>
+<p>混合跟踪是递归贝叶斯状态估计和混合模型表示的组合</p>
+<p><video src="E:\papers\论文的资源\Vehicle tracking demo.mp4"></video></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/varyshare/article/details/97642209">易懂教程我是如何十分钟理解与推导贝叶斯滤波(Bayes Filter)算法？</a></p>
+<p><a target="_blank" rel="noopener" href="https://towardsdatascience.com/particle-filter-a-hero-in-the-world-of-non-linearity-and-non-gaussian-6d8947f4a3dc">Particle Filter : A hero in the world of Non-Linearity and Non-Gaussian</a></p>
+<blockquote>
+<p>IDM: is able to model car-following behaviors.</p>
+</blockquote>
+<blockquote>
+<ul>
+<li>Abstract: To overcome this challenge, we propose a generic vehicle tracking framework based on modified mixture particle filter, which can make the number of tracking targets adaptive to real-time observations and track all the vehicles within sensor range simultaneously in a uniform architecture without explicit data association. Each object corresponds to a mixture component whose distribution is non-parametric and approximated by particle hypotheses. Most tracking approaches employ vehicle kinematic models as the prediction model. However, it is hard for these models to make proper predictions when sensor measurements are lost or become low quality due to partial or complete occlusions. Moreover, these models are incapable of forecasting sudden maneuvers. To address these problems, we propose to incorporate learning-based behavioral models instead of pure vehicle kinematic models to realize prediction in the prior update of recursive Bayesian state estimation.</li>
+<li>Particle filter (PF) has advantages over variants of Kalman filter since it has no limitations on the form of the system and state distributions. Also, the mixture representation is more effective at capturing multiple modes than a single distribution.</li>
+<li>we proposebto enhance the capability of prediction models in addition to improving the detection algorithms.</li>
+</ul>
+</blockquote>
+<ul>
+<li><input disabled="" type="checkbox"> In [19], Stefan et al. proposed to use IDM and particle filtering to make probabilistic long-term prediction for car-following behavior in highway scenarios. [Probabilistic  Trajectory  Prediction  for  Autonomous  Vehicles  withAttentive  Recurrent  Neural  Process](..\papers\车辆路径修正\Probabilistic  Trajectory  Prediction  for  Autonomous  Vehicles  withAttentive  Recurrent  Neural  Process.pdf) </li>
+<li><input disabled="" type="checkbox"> The Intelligent Driver Model(IDM) is a representative car-following model which describes the dynamics of the position and velocity of a single vehicle [18]. [Congested Traffic States in Empirical Observations and.](..\papers\车辆路径修正\Congested Traffic States in Empirical Observations and.pdf) </li>
+<li><input disabled="" type="checkbox"> paper “Tracking without bells and whistles.” provides an approach based on bounding-box regression. Given multiple object bounding boxes from a set of ordered frames, the authors use a regression model to predict the positions of the objects’ bounding boxes in following frames.</li>
+</ul>
+<p>LSTM考虑了周围车辆的信息：In paper “Trajectory Prediction of Surrounding Vehicles Using LSTM Network”, a method to predict the trajectories of the neighboring traffic participants is proposed using a long short-term memory (LSTM) network, with the goal of taking into account the relationship between the ego car and surrounding vehicles.</p>
+</li>
+</ol>
+<h2 id="github-可借鉴的资料"><a href="#github-可借鉴的资料" class="headerlink" title="github 可借鉴的资料"></a>github 可借鉴的资料</h2><p><a target="_blank" rel="noopener" href="https://github.com/AtsushiSakai/PythonRobotics#quintic-polynomials-planning">Quintic polynomials planning</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/AtsushiSakai/PythonRobotics">path tracking</a></p>
+<p>我的想法是 <code>利用这个算法实现让后车来跟踪前车的轨迹的目的</code></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/bednarikjan/TrajectoryClustering">trajectory Clustering</a></p>
+<p> [论文链接](..\papers\车辆路径修正\Clustering of vehicle trajectories.pdf) </p>
+<p>利用聚类来得到置信度最高的轨迹，从而用来修正异常的轨迹。</p>
+<p>论文主要内容包括</p>
+<ul>
+<li>轨迹相似性的度量</li>
+</ul>
+<blockquote>
+<p>初步的想法是通过路径跟踪或者聚类得到置信度较高的轨迹，从而用来修正异常的轨迹。</p>
+</blockquote>
+<ol>
+<li>根据历史车流来得到正常的轨迹，让后面的车沿着这条正常的轨迹走。</li>
+</ol>
+<p>初步的结果：</p>
+<ol>
+<li>轨迹的聚类结果是同一个道路上的轨迹都聚到了一类中，因此得到正常的精确轨迹的想法通过聚类不好实现。</li>
+</ol>
+<h2 id="初步的解决方案version20210428"><a href="#初步的解决方案version20210428" class="headerlink" title="初步的解决方案version20210428"></a>初步的解决方案version20210428</h2><p>异常情况</p>
+<ol>
+<li>移动的角度与车的朝向夹角大于设定的阈值，属于异常。</li>
+<li>Quintic polynomials planning 中 判断轨迹中 <code>加速度</code>和<code>jerk</code>是否大于阈值。</li>
+</ol>
+<p>出现上述情况，根据历史数据（该车）得到运动规律。方法有运动曲线拟合，运动公式。从而估计出大概的位置</p>
+<p><strong>实行的方案</strong>：</p>
+<p>根据<code>条件1</code>来判断异常，估计方法为<a href="#version1_method2">见前文version 1</a>。</p>
+<p>未修正的结果</p>
+<p><video src="C:\Users\wanji\Videos\Captures\结果_未修正_轨迹BoxId_57_331.mp4"></video></p>
+<p>修正后的结果</p>
+<p><video src="C:\Users\wanji\Videos\Captures\结果_修正_轨迹_BoxId_57_331.mp4"></video></p>
+<p>因此对于车辆闪烁问题，要做的就是如何填补缺失的box数据，最后还能和之后出现的真实的box对应上。</p>
+<blockquote>
+<p>预测的方法：对于异常缺失的box利用前后车的信息或本身运动的变化趋势（加、减速）<br>$$<br>V_{self}=\frac{3}{8}V_{front}+\frac{2}{8}V_{left}+\frac{2}{8}V_{right}+\frac{1}{8}V_{behind}<br>$$<br>如果前后左右速度某一个为空的话，用检测到的 $V_{detect}$ 来代替。</p>
+</blockquote>
+<p><code>一个思考的问题：车道线数据中的轨迹可以作为标准的轨迹来修正异常的轨迹</code></p>
+<blockquote>
+<p>请教马老师、黄老师后：</p>
+<ol>
+<li><p>航向角是预测的，速度是根据位移计算的。</p>
+</li>
+<li><p>误检的概率比较低，基本可以假设==出现了box可以认定此处附近是有物体的==。（或者先可以这样做个假设）</p>
+</li>
+</ol>
+</blockquote>
+<p>目前方案里没考虑到目标框大范围的往前异常移动的情况</p>
+<blockquote>
+<p>2021.04.29（娟姐的建议）</p>
+<p>从多目标的行为分析角度出发</p>
+<p><img src="https://i.loli.net/2021/08/11/p8h7yjGbVgYI243.png" alt="娟姐给的工作方向_2021_04_29.png"></p>
+<p>转弯的曲线与车的速度、大小有关，区分异常轨迹的时候要考虑到这一点。</p>
+<p>2021.04.30 </p>
+<p>轨道置信度评价方法</p>
+<p>起点、终点要处在合理的位置；轨迹长度要大于给定的阈值（计算距离时要注意车辆检测造成的位移误差）</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/B4XTgoABiItZwZF1RSfh1A">参考1</a></p>
+</blockquote>
+</blockquote>
+<h2 id="2021-05-10-汇报后-接下来的工作方向"><a href="#2021-05-10-汇报后-接下来的工作方向" class="headerlink" title="2021.05.10 汇报后 接下来的工作方向"></a>2021.05.10 汇报后 接下来的工作方向</h2><p>详见 <code>工作笔记</code></p>
+<h4 id="轨迹异常的判定-轨迹的置信度评价"><a href="#轨迹异常的判定-轨迹的置信度评价" class="headerlink" title="轨迹异常的判定/轨迹的置信度评价"></a>轨迹异常的判定/轨迹的置信度评价</h4><blockquote>
+<p>Q: 在路径规划中常三阶导数的物理含义以及在算法中的作用是什么？</p>
+<p>A: 三阶导数是加加速度，表示加速度的变化率。在物理上，是舒适性的一个重要指标。在算法中，相邻离散点之间的连接就是通过常三阶导数实现的。</p>
+</blockquote>
+<h4 id="轨迹聚类工作"><a href="#轨迹聚类工作" class="headerlink" title="轨迹聚类工作"></a>轨迹聚类工作</h4><p><strong>2021.05.13：</strong></p>
+<ul>
+<li><p>做的聚类，轨道数据，聚类效果很差，不同车道的轨迹都被聚到的一个类里面，另外速度很慢。</p>
+<p>尝试对车辆的轨迹进行精简化。</p>
+</li>
+<li><p>尝试对八号门数据聚类，对轨迹点数统计后，发现许多box的轨迹点数偏少，轨迹数据比较差。尝试</p>
+<p>只对机动车的数据分析</p>
+</li>
+</ul>
+<p>八号门聚类效果也很差，采取使用车道线数据聚类的备选方案。</p>
+<h4 id="异常值检测"><a href="#异常值检测" class="headerlink" title="异常值检测"></a>异常值检测</h4><p><a target="_blank" rel="noopener" href="https://www.secrss.com/articles/11994">数据挖掘最前线：五种常用异常值检测方法</a></p>
+<p><a target="_blank" rel="noopener" href="https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html#sklearn.mixture.GaussianMixture">高斯混合模型</a></p>
+<p>试下<code>DBSCAN聚类</code>检测异常值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.cluster <span class="keyword">import</span> DBSCAN</span><br><span class="line">random_data = np.random.randn(<span class="number">50000</span>,<span class="number">2</span>) * <span class="number">20</span> + <span class="number">20</span></span><br><span class="line">outlier_detection = DBSCAN(min_samples = <span class="number">2</span>, eps = <span class="number">3</span>)</span><br><span class="line">clusters = outlier_detection.fit_predict(random_data)</span><br><span class="line"><span class="built_in">list</span>(clusters).count(-<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+
+<p>孤立森林算法适用于高维数据集</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> IsolationForest</span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line">np.random.seed(<span class="number">1</span>)</span><br><span class="line">random_data = np.random.randn(<span class="number">50000</span>,<span class="number">2</span>) * <span class="number">20</span> + <span class="number">20</span></span><br><span class="line">clf = IsolationForest( behaviour = <span class="string">&quot;new&quot;</span>, max_samples=<span class="number">100</span>, random_state = <span class="number">1</span>, contamination= <span class="string">&quot;auto&quot;</span>)</span><br><span class="line">preds = clf.fit_predict(random_data)</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/122702657">多项式拟合</a></p>
+<h2 id="轨迹预测"><a href="#轨迹预测" class="headerlink" title="轨迹预测"></a>轨迹预测</h2><blockquote>
+<p>秦昊：用的是GRIP++</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/B4XTgoABiItZwZF1RSfh1A">基于决策规划模型的车辆轨迹预测方法</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/04/13/%E5%BC%82%E5%B8%B8%E7%8E%B0%E8%B1%A1%E9%97%AE%E9%A2%98%E5%8F%8A%E5%AF%B9%E8%BD%A8%E8%BF%B9%E4%BF%AE%E6%AD%A3%E9%97%AE%E9%A2%98%E7%9A%84%E6%80%9D%E8%80%83/" data-id="ckto3u196000820ia4j0l3qu0" data-title="" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+
+  
+
+
+  <nav id="page-nav">
+    
+    <a class="extend prev" rel="prev" href="/">&laquo; Prev</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/08/09/pcap%E5%8C%85%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95%E7%BD%91%E5%9D%80/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/28/%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/15/2017%E5%B9%B4%E6%9D%A5%E7%9B%B8%E5%85%B3%E7%9A%843D%E8%A7%86%E8%A7%89%E7%82%B9%E4%BA%91%E7%AE%97%E6%B3%95%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/16/%E5%86%85%E5%A4%96%E5%8F%82%E6%A0%87%E5%AE%9A/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/07/%E9%9A%A7%E9%81%93%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

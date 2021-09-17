@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="PointNet 系列论文阅读笔记论文解读博客 - 推荐 PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation4.2 PointNet Architecture该部分中包含对高维point排序的讨论，  does not exist an ordering that is stable w.r.t.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2021/07/15/2017%E5%B9%B4%E6%9D%A5%E7%9B%B8%E5%85%B3%E7%9A%843D%E8%A7%86%E8%A7%89%E7%82%B9%E4%BA%91%E7%AE%97%E6%B3%95%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="PointNet 系列论文阅读笔记论文解读博客 - 推荐 PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation4.2 PointNet Architecture该部分中包含对高维point排序的讨论，  does not exist an ordering that is stable w.r.t.">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/08/11/7f52dRksvcOtjKh.png">
+<meta property="og:image" content="https://i.loli.net/2021/08/11/g2BPXMWZlHKNu4R.png">
+<meta property="og:image" content="https://i.loli.net/2021/08/11/TSoHfspRD6wZAVL.png">
+<meta property="og:image" content="https://i.loli.net/2021/08/11/NUDpHzaWfiCGsqe.png">
+<meta property="og:image" content="https://i.loli.net/2021/08/11/aqP9Q86iHIrmToE.png">
+<meta property="article:published_time" content="2021-07-15T12:34:09.693Z">
+<meta property="article:modified_time" content="2021-08-11T08:09:15.668Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/08/11/7f52dRksvcOtjKh.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-2017年来相关的3D视觉点云算法论文阅读笔记" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/07/15/2017%E5%B9%B4%E6%9D%A5%E7%9B%B8%E5%85%B3%E7%9A%843D%E8%A7%86%E8%A7%89%E7%82%B9%E4%BA%91%E7%AE%97%E6%B3%95%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" class="article-date">
+  <time class="dt-published" datetime="2021-07-15T12:34:09.693Z" itemprop="datePublished">2021-07-15</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h1 id="PointNet-系列论文阅读笔记"><a href="#PointNet-系列论文阅读笔记" class="headerlink" title="PointNet 系列论文阅读笔记"></a>PointNet 系列论文阅读笔记</h1><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/336496973">论文解读博客 - <strong>推荐</strong></a></p>
+<h2 id="PointNet-Deep-Learning-on-Point-Sets-for-3D-Classification-and-Segmentation"><a href="#PointNet-Deep-Learning-on-Point-Sets-for-3D-Classification-and-Segmentation" class="headerlink" title="PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation"></a>PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation</h2><h3 id="4-2-PointNet-Architecture"><a href="#4-2-PointNet-Architecture" class="headerlink" title="4.2 PointNet Architecture"></a>4.2 PointNet Architecture</h3><p>该部分中包含对高维point排序的讨论，</p>
+<blockquote>
+<p>does not exist an ordering that is stable w.r.t. point perturbations in the general<br>sense. </p>
+</blockquote>
+<p>并给出了通俗的解释。</p>
+<p>利用网络的搭建来逼近一个所需的对称函数</p>
+<blockquote>
+<p><img src="https://i.loli.net/2021/08/11/7f52dRksvcOtjKh.png" alt="image-20210720094537797.png"></p>
+</blockquote>
+<blockquote>
+<p>为了保证输入点云的<strong>不变性</strong>，作者在进行特征提取前先对点云数据进行<strong>对齐操作</strong>（也就是input transform），对齐操作是通过训练一个小型的网络（也就是上图中的T-Net）来得到<strong>转换矩阵</strong>，并将之和输入点云数据相乘来实现。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">torch.<span class="built_in">max</span>(<span class="built_in">input</span>, dim, keepdim=<span class="literal">False</span>, out=<span class="literal">None</span>) -&gt; (Tensor, LongTensor)</span><br><span class="line"><span class="comment"># 按维度dim 返回最大值：0代表列，1代表行</span></span><br><span class="line"><span class="comment"># If keepdim is True, the output tensors are of the same size as input except in the dimension dim where they are of size 1.</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">a = torch.arange(<span class="number">1</span>, <span class="number">17</span>)  <span class="comment"># a&#x27;s shape is (16,)</span></span><br><span class="line">a.view(<span class="number">2</span>, <span class="number">2</span>, <span class="number">4</span>) <span class="comment"># output below</span></span><br><span class="line">tensor([[[ <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>,  <span class="number">4</span>],</span><br><span class="line">         [ <span class="number">5</span>,  <span class="number">6</span>,  <span class="number">7</span>,  <span class="number">8</span>]],</span><br><span class="line"> </span><br><span class="line">        [[ <span class="number">9</span>, <span class="number">10</span>, <span class="number">11</span>, <span class="number">12</span>],</span><br><span class="line">         [<span class="number">13</span>, <span class="number">14</span>, <span class="number">15</span>, <span class="number">16</span>]]])</span><br><span class="line">[torch.FloatTensor of size 2x2x4]</span><br></pre></td></tr></table></figure>
+
+<p><strong>先按列排，再按行排，最后按页排</strong></p>
+<p><code>.repeat</code>用法</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>x = torch.tensor([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>x.repeat(<span class="number">4</span>, <span class="number">2</span>)</span><br><span class="line">tensor([[ <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>,  <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>],</span><br><span class="line">        [ <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>,  <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>],</span><br><span class="line">        [ <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>,  <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>],</span><br><span class="line">        [ <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>,  <span class="number">1</span>,  <span class="number">2</span>,  <span class="number">3</span>]])</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>x.repeat(<span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>).size()</span><br><span class="line">torch.Size([<span class="number">4</span>, <span class="number">2</span>, <span class="number">3</span>])</span><br></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/156825903">Conv1D和Conv2D的区别</a></p>
+<blockquote>
+<p>一言概括，2d先横着扫再竖着扫，1d只能竖着扫</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://renzibei.com/2020/06/30/conv1d%E4%B8%8Econv2d%E7%9A%84%E5%8C%BA%E5%88%AB/">https://renzibei.com/2020/06/30/conv1d%E4%B8%8Econv2d%E7%9A%84%E5%8C%BA%E5%88%AB/</a></p>
+<p><img src="https://i.loli.net/2021/08/11/g2BPXMWZlHKNu4R.png" alt="image-20210722193611214.png"></p>
+<h2 id="PointNet-Deep-Hierarchical-Feature-Learning-on-Point-Sets-in-a-Metric-Space"><a href="#PointNet-Deep-Hierarchical-Feature-Learning-on-Point-Sets-in-a-Metric-Space" class="headerlink" title="PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space"></a>PointNet++: Deep Hierarchical Feature Learning on Point Sets in a Metric Space</h2><blockquote>
+<p>We introduce a hierarchical neural network, named as PointNet++, to process a set of points sampled<br>in a metric space in a hierarchical fashion.</p>
+<p>Similar to CNNs, we extract local features capturing fine geometric structures from small<br>neighborhoods; such local features are further grouped into larger units and processed to produce<br>higher level features. This process is repeated until we obtain the features of the whole point set.</p>
+<p>We choose our local feature learner to be PointNet.</p>
+</blockquote>
+<h3 id="Hierarchical-Point-Set-Feature-Learning"><a href="#Hierarchical-Point-Set-Feature-Learning" class="headerlink" title="Hierarchical Point Set Feature Learning"></a>Hierarchical Point Set Feature Learning</h3><blockquote>
+<p>Our hierarchical structure is composed by a number of set abstraction levels (Fig. 2). At each level, a<br>set of points is processed and abstracted to produce a new set with fewer elements. The set abstraction<br>level is made of three key layers: Sampling layer, Grouping layer and PointNet layer. The Sampling<br>layer selects a set of points from input points, which defines the centroids of local regions. Grouping<br>layer then constructs local region sets by finding “neighboring” points around the centroids. PointNet<br>layer uses a mini-PointNet to encode local region patterns into feature vectors.</p>
+</blockquote>
+<ul>
+<li><p>Sampling layer</p>
+</li>
+<li><p>Grouping layer</p>
+</li>
+</ul>
+<p>PointNet++ </p>
+<blockquote>
+<p>To achieve this goalwe propose density adaptive PointNet layers (Fig. 3) that learn to<br>combine features from regions of different scales when the input sampling density changes. We call<br>our hierarchical network with density adaptive PointNet layers as PointNet++.</p>
+<p>PointNet++：a powerful neural network architecture for processing point<br>sets sampled in a metric space. PointNet++ recursively functions on a nested partitioning of the<br>input point set, and is effective in learning hierarchical features with respect to the distance metric.<br>To handle the non uniform point sampling issue, we propose two novel set abstraction layers that<br>intelligently aggregate multi-scale information according to local point densities.</p>
+</blockquote>
+<h1 id="VoxelNet-论文和代码解析"><a href="#VoxelNet-论文和代码解析" class="headerlink" title="VoxelNet 论文和代码解析"></a>VoxelNet 论文和代码解析</h1><p><strong>可以把上面的PointNet或者PointNet++理解为用于图像分类任务中的ResNet等CNN网络</strong></p>
+<blockquote>
+<p><strong>CNN模型：ResNet</strong></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/54289848">ResNet及其变种的结构梳理、有效性分析与代码解读</a></p>
+<p>网络深度增加时，网络准确度出现饱和，甚至出现下降。</p>
+<ul>
+<li><p>56层的网络比20层网络效果还要差。这不会是过拟合问题，因为56层网络的训练误差同样高。我们知道深层网络存在着梯度消失或者爆炸的问题，这使得深度学习模型很难训练。但是现在已经存在一些技术手段如BatchNorm来缓解这个问题。</p>
+</li>
+<li><p><img src="https://i.loli.net/2021/08/11/TSoHfspRD6wZAVL.png" alt="image-20210723100429081.png"></p>
+<p>简单地说，原先的网络输入x，希望输出H(x)。现在我们改一改，我们令H(x)=F(x)+x，那么我们的网络就只需要学习输出一个残差F(x)=H(x)-x。作者提出，学习残差F(x)=H(x)-x会比直接学习原始特征H(x)简单的多。</p>
+</li>
+<li><p><img src="https://i.loli.net/2021/08/11/NUDpHzaWfiCGsqe.png" alt="image-20210723095821692.png"></p>
+</li>
+</ul>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BasicBlock</span>(<span class="params">nn.Module</span>):</span></span><br><span class="line">    expansion = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span>(<span class="params">self, inplanes, planes, stride=<span class="number">1</span>, downsample=<span class="literal">None</span></span>):</span></span><br><span class="line">        <span class="built_in">super</span>(BasicBlock, self).__init__()</span><br><span class="line">        self.conv1 = conv3x3(inplanes, planes, stride)</span><br><span class="line">        self.bn1 = nn.BatchNorm2d(planes)</span><br><span class="line">        self.relu = nn.ReLU(inplace=<span class="literal">True</span>)</span><br><span class="line">        self.conv2 = conv3x3(planes, planes)</span><br><span class="line">        self.bn2 = nn.BatchNorm2d(planes)</span><br><span class="line">        self.downsample = downsample</span><br><span class="line">        self.stride = stride</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">forward</span>(<span class="params">self, x</span>):</span></span><br><span class="line">        identity = x</span><br><span class="line"></span><br><span class="line">        out = self.conv1(x)</span><br><span class="line">        out = self.bn1(out)</span><br><span class="line">        out = self.relu(out)</span><br><span class="line"></span><br><span class="line">        out = self.conv2(out)</span><br><span class="line">        out = self.bn2(out)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> self.downsample <span class="keyword">is</span> <span class="keyword">not</span> <span class="literal">None</span>:</span><br><span class="line">            identity = self.downsample(x)</span><br><span class="line"></span><br><span class="line">        out += identity</span><br><span class="line">        out = self.relu(out)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> out</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/08/11/aqP9Q86iHIrmToE.png" alt="image-20210723145241437.png"></p>
+<blockquote>
+<p>既然这样那为什么第一部分依旧要放一个7x7的大卷积核呢，不知道是出于怎样的考虑，但是现在的多数网络都把这部分改成3个3x3卷积核级联。</p>
+</blockquote>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/07/15/2017%E5%B9%B4%E6%9D%A5%E7%9B%B8%E5%85%B3%E7%9A%843D%E8%A7%86%E8%A7%89%E7%82%B9%E4%BA%91%E7%AE%97%E6%B3%95%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/" data-id="ckto3u18r000020iagz5khhfr" data-title="" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/07/28/%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/06/16/%E5%86%85%E5%A4%96%E5%8F%82%E6%A0%87%E5%AE%9A/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/08/09/pcap%E5%8C%85%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95%E7%BD%91%E5%9D%80/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/28/%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/15/2017%E5%B9%B4%E6%9D%A5%E7%9B%B8%E5%85%B3%E7%9A%843D%E8%A7%86%E8%A7%89%E7%82%B9%E4%BA%91%E7%AE%97%E6%B3%95%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/16/%E5%86%85%E5%A4%96%E5%8F%82%E6%A0%87%E5%AE%9A/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/07/%E9%9A%A7%E9%81%93%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

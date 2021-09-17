@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="入职一个月的工作记录 第一周 完成了车辆目标框和车辆轨迹线的可视化  了解点云数据和8号门的数据协议，使用open3d绘制目标框和轨迹。   异常现象的分析和归纳  观察8号门数据可视化后的结果和智慧平台上的结果，记录出现的异常现象。总结归类。结果如下  1）车辆异常晃动，多发生在静止的车辆或正在减速停止的车辆，检测跟踪算法对于静止的车辆中心点的检测存在误差，因此导致车辆的晃动（航向角变化，中心点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hexo">
+<meta property="og:url" content="http://example.com/2021/05/08/20210508_%E5%85%A5%E8%81%8C%E4%BB%A5%E6%9D%A5%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="入职一个月的工作记录 第一周 完成了车辆目标框和车辆轨迹线的可视化  了解点云数据和8号门的数据协议，使用open3d绘制目标框和轨迹。   异常现象的分析和归纳  观察8号门数据可视化后的结果和智慧平台上的结果，记录出现的异常现象。总结归类。结果如下  1）车辆异常晃动，多发生在静止的车辆或正在减速停止的车辆，检测跟踪算法对于静止的车辆中心点的检测存在误差，因此导致车辆的晃动（航向角变化，中心点">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://i.loli.net/2021/08/11/Zap8qtV5JQckSXO.png">
+<meta property="og:image" content="https://i.loli.net/2021/08/11/T4zUxvOsIf7n6HD.png">
+<meta property="article:published_time" content="2021-05-08T10:50:49.747Z">
+<meta property="article:modified_time" content="2021-08-11T08:06:29.334Z">
+<meta property="article:author" content="John Doe">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/08/11/Zap8qtV5JQckSXO.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-20210508_入职以来工作总结" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2021/05/08/20210508_%E5%85%A5%E8%81%8C%E4%BB%A5%E6%9D%A5%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/" class="article-date">
+  <time class="dt-published" datetime="2021-05-08T10:50:49.747Z" itemprop="datePublished">2021-05-08</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <p>入职一个月的工作记录</p>
+<h2 id="第一周"><a href="#第一周" class="headerlink" title="第一周"></a>第一周</h2><ol>
+<li><p>完成了车辆目标框和车辆轨迹线的可视化</p>
+<ul>
+<li>了解点云数据和8号门的数据协议，使用<code>open3d</code>绘制目标框和轨迹。</li>
+</ul>
+</li>
+<li><p>异常现象的分析和归纳</p>
+<ul>
+<li><p>观察8号门数据可视化后的结果和智慧平台上的结果，记录出现的异常现象。总结归类。结果如下</p>
+<blockquote>
+<p>1）车辆异常晃动，多发生在静止的车辆或正在减速停止的车辆，检测跟踪算法对于静止的车辆中心点的检测存在误差，因此导致车辆的晃动（航向角变化，中心点变化）</p>
+<p>2）车辆目标框闪烁问题，这是由于检测跟踪的中断导致的。</p>
+<p>3）车辆异常的轨迹路线，行进路线不符合正常的运动学模型。</p>
+</blockquote>
+</li>
+</ul>
+</li>
+</ol>
+<h2 id="第二周"><a href="#第二周" class="headerlink" title="第二周"></a>第二周</h2><h3 id="对几类异常问题的解决方法"><a href="#对几类异常问题的解决方法" class="headerlink" title="对几类异常问题的解决方法"></a>对几类异常问题的解决方法</h3><ol>
+<li><p>解决了车辆目标框异常晃动问题</p>
+<p>==20210526 写中期汇报时意识到了一个问题，因为异常晃动，会导致这一两帧的速度也会急剧增大==</p>
+<p>当物体为实际静止的情况时，因为检测精度的限制，检测结果中该物体仍然会存在微小的移动。因此我们需要做固定化处理，即固定中心点、航向角。判断物体静止的条件是检测出的物体速度小于 给定的阈值。之后从最新的帧往回退，直到某一帧的box速度大于阈值，停止。将box的位置，航向角固定为该帧中box对应的位置，航向角。</p>
+<p><img src="https://i.loli.net/2021/08/11/Zap8qtV5JQckSXO.png" alt="image-20210508192941489.png"></p>
+</li>
+<li><p>对设计的根据运动的连续性来修正检测结果的方法进行了编程实现。</p>
+<p>当假设数据中当前帧的速度和航向角等特征值<strong>不太</strong>准确的情况下，可以从物体状态变换的连续性角度出发，满足一阶连续<br>$$<br>\hat{C_3} \approx C_2 + (C_2-C_1)<br>$$<br>其中 $C_i$ 表示第 $i$ 帧的box位置向量将$\hat{C_3},与检测的C_3综合$，<br>$$<br>\check{C_3}=\alpha \hat{C_3} + (1-\alpha)C_3, \quad \alpha \in [0,1]<br>$$</p>
+</li>
+<li><p>对于车辆目标框大小变动的问题</p>
+<p>在一个目标首次出现时，它的长宽高就要固定下来，在之后每一帧中，长宽高要保持不变。</p>
+</li>
+</ol>
+<h3 id="对目标框闪烁问题的思考和初步的解决方案"><a href="#对目标框闪烁问题的思考和初步的解决方案" class="headerlink" title="对目标框闪烁问题的思考和初步的解决方案"></a>对目标框闪烁问题的思考和初步的解决方案</h3><ul>
+<li>目标框的闪烁问题是由于检测和跟踪的中断，导致目标在一帧或连续几帧中消失。因此尝试对缺失的数据进行填补</li>
+<li>学习了kalman滤波预测原理，编程实现了利用 kalman滤波对缺失的box数据进行预测填补，测试了算法效果。</li>
+</ul>
+<p>编程思路：</p>
+<blockquote>
+<p>针对box目标框闪烁问题<br>维护一个队列，队列中存储的是在上一帧中出现的box_id。<br>for box in queue:<br>    if box not in frame:<br>        该box消失，通过kalman预测填补上该box缺失的信息</p>
+</blockquote>
+<p>**Note: ** 目前设置的是只对缺失的box连续补6帧，如果6帧后box还未在frame中出现，不再对box进行预测填补。<br>因为物体可能存在ID跳变问题，即同一物体检测的中断前后id不同，预测box和实际box发生<code>重叠</code>。</p>
+<p>针对<code>重叠</code>问题的解决：</p>
+<blockquote>
+<p>在某一帧中：检测到预测的box(id_1)和该帧中的一个box(id_2)发生重叠（计算IOU），将两个box合并，box(id_1)的历史数据给box(id_2),之后只维护box(id_2)。</p>
+</blockquote>
+<p><img src="https://i.loli.net/2021/08/11/T4zUxvOsIf7n6HD.png" alt="image-20210508194612424.png"></p>
+<h2 id="第三周"><a href="#第三周" class="headerlink" title="第三周"></a>第三周</h2><ol>
+<li><p>调研了目前车辆轨迹预测的研究工作，尝试用来解决轨迹异常问题。</p>
+<ul>
+<li>调研当前多目标交互的轨迹预测的工作，查看是否有的方法</li>
+<li>学习了Quintic polynomials planning，尝试利用其中的思想来构造异常轨迹的评价方法</li>
+<li>查看了轨迹聚类的方法，尝试利用聚类方法来得到置信度最高的轨迹 </li>
+</ul>
+</li>
+<li><p>实现了异常轨迹的判定、尝试复现论文”Generic Vehicle Tracking Framework Capable of Handling Occlusions Based on Modified Mixture Particle Filter”</p>
+<p>==异常轨迹的判定是检查位移向量的角度变化是否大于设定的阈值。==</p>
+<p>编程实现了异常轨迹的判定及修正方法，观察了实验效果 。</p>
+<p>修正前后的结果</p>
+<ul>
+<li><p>修正前</p>
+<p><a href="C:\Users\wanji\Videos\Captures\异常轨迹修正前.mp4">结果</a></p>
+<p>修正后</p>
+<p><a href="C:\Users\wanji\Videos\Captures\异常轨迹修正后.mp4">结果</a></p>
+</li>
+</ul>
+<p>详细阅读了论文”Generic Vehicle Tracking Framework Capable of Handling Occlusions Based on Modified Mixture Particle Filter”。</p>
+</li>
+</ol>
+<h2 id="第四周"><a href="#第四周" class="headerlink" title="第四周"></a>第四周</h2><ol>
+<li>深入阅读论文”Generic Vehicle Tracking Framework Capable of Handling Occlusions Based on Modified Mixture Particle Filter“<ul>
+<li>学习了马尔可夫链蒙特卡罗方法的原理。</li>
+<li>学习了贝叶斯滤波、粒子滤波。</li>
+<li>阅读论文”Maintaining multimodality through mixture tracking“，学习了 mixture particle filter 理论。</li>
+</ul>
+</li>
+<li>查阅了IDM模型（车辆跟随模型）以及一种利用回归方法来做轨迹预测的模型（考虑了周围的车辆信息）。</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2021/05/08/20210508_%E5%85%A5%E8%81%8C%E4%BB%A5%E6%9D%A5%E5%B7%A5%E4%BD%9C%E6%80%BB%E7%BB%93/" data-id="ckto3u190000120ia3bwabmyo" data-title="" class="article-share-link">Share</a>
+      
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2021/06/07/%E9%9A%A7%E9%81%93%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2021/05/06/%E5%A4%8D%E7%8E%B0%E8%AE%BA%E6%96%87%E7%9A%84%E5%AD%A6%E4%B9%A0%E4%B9%8B%E8%B7%AF/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/08/">August 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/07/">July 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/06/">June 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/05/">May 2021</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/04/">April 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2021/08/09/pcap%E5%8C%85%E5%AE%89%E8%A3%85%E6%96%B9%E6%B3%95%E7%BD%91%E5%9D%80/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/28/%E5%AD%A6%E4%B9%A0%E6%9D%82%E8%AE%B0/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/07/15/2017%E5%B9%B4%E6%9D%A5%E7%9B%B8%E5%85%B3%E7%9A%843D%E8%A7%86%E8%A7%89%E7%82%B9%E4%BA%91%E7%AE%97%E6%B3%95%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/16/%E5%86%85%E5%A4%96%E5%8F%82%E6%A0%87%E5%AE%9A/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2021/06/07/%E9%9A%A7%E9%81%93%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90/">(no title)</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2021 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
